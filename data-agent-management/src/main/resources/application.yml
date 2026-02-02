@@ -17,9 +17,18 @@ spring:
       continue-on-error: true
       separator: ;
       encoding: utf-8
+
+  elasticsearch:
+    uris: http://192.168.1.142:9200
+    username:
+    password:
   ai:
     vectorstore:
-      type: simple
+      type: elasticsearch
+      elasticsearch:
+        index-name: data-agent-vectors
+        dimensions: 1024
+        similarity: cosine
     alibaba:
       data-agent:
         vector-store:
