@@ -34,7 +34,6 @@ public class ModelConfigDTO {
 	@NotBlank(message = "provider must not be empty")
 	private String provider; // e.g. "openai", "deepseek"
 
-	@NotBlank(message = "apiKey must not be empty")
 	private String apiKey; // e.g. "https://api.openai.com"
 
 	@NotBlank(message = "baseUrl must not be empty")
@@ -58,5 +57,16 @@ public class ModelConfigDTO {
 	private Integer maxTokens = 2000;
 
 	private Boolean isActive = true;
+
+	// 模型代理配置，默认关闭（使用直连）
+	private Boolean proxyEnabled = false;
+
+	private String proxyHost;
+
+	private Integer proxyPort;
+
+	private String proxyUsername;
+
+	private String proxyPassword;
 
 }

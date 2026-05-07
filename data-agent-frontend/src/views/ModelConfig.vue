@@ -212,12 +212,12 @@
             />
           </el-form-item>
 
-          <el-form-item label="API密钥" prop="apiKey">
+          <el-form-item label="API密钥" prop="apiKey" :required="formData.provider !== 'custom'">
             <el-input
               v-model="formData.apiKey"
               type="password"
               show-password
-              placeholder="请输入API密钥"
+              :placeholder="formData.provider === 'custom' ? '可选填' : '请输入API密钥'"
             />
           </el-form-item>
 
@@ -274,6 +274,52 @@
           </el-form-item>
         </el-form>
 
+        <el-divider content-position="left">网络代理配置</el-divider>
+
+        <el-form-item label="启用代理">
+          <el-switch v-model="formData.proxyEnabled" />
+          <span class="form-tip" style="margin-left: 10px">
+            如果您的服务器处于受限内网，请开启代理以连接 AI 服务
+          </span>
+        </el-form-item>
+
+        <transition name="el-fade-in">
+          <div v-if="formData.proxyEnabled">
+            <el-form-item label="代理主机" prop="proxyHost" :required="formData.proxyEnabled">
+              <el-input
+                v-model="formData.proxyHost"
+                placeholder="例如: 127.0.0.1 或 proxy.example.com"
+              />
+            </el-form-item>
+
+            <el-form-item label="代理端口" prop="proxyPort" :required="formData.proxyEnabled">
+              <el-input-number
+                v-model="formData.proxyPort"
+                :min="1"
+                :max="65535"
+                controls-position="right"
+                style="width: 100%"
+              />
+            </el-form-item>
+
+            <el-form-item label="代理用户名" prop="proxyUsername">
+              <el-input
+                v-model="formData.proxyUsername"
+                placeholder="可选，代理服务器需要认证时填写"
+              />
+            </el-form-item>
+
+            <el-form-item label="代理密码" prop="proxyPassword">
+              <el-input
+                v-model="formData.proxyPassword"
+                type="password"
+                show-password
+                placeholder="可选"
+              />
+            </el-form-item>
+          </div>
+        </transition>
+
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
@@ -323,6 +369,11 @@
         completionsPath: '',
         embeddingsPath: '',
         isActive: false,
+        proxyEnabled: false,
+        proxyHost: '',
+        proxyPort: 7890, // 给个常用的默认端口
+        proxyUsername: '',
+        proxyPassword: '',
       });
 
       // 提供商与API地址的映射
@@ -346,7 +397,20 @@
         provider: [{ required: true, message: '请选择提供商', trigger: 'change' }],
         modelType: [{ required: true, message: '请选择模型类型', trigger: 'change' }],
         modelName: [{ required: true, message: '请输入模型名称', trigger: 'blur' }],
-        apiKey: [{ required: true, message: '请输入API密钥', trigger: 'blur' }],
+        apiKey: [
+          {
+            validator: (_rule, value, callback) => {
+              if (formData.value.provider === 'custom') {
+                callback();
+              } else if (!value || value.trim() === '') {
+                callback(new Error('请输入API密钥'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
         baseUrl: [{ required: true, message: '请输入API地址', trigger: 'blur' }],
         temperature: [
           { type: 'number', min: 0, max: 2, message: '温度值必须在0-2之间', trigger: 'blur' },
@@ -357,6 +421,30 @@
             min: 100,
             max: 10000,
             message: '最大Token必须在100-10000之间',
+            trigger: 'blur',
+          },
+        ],
+        proxyHost: [
+          {
+            validator: (_rule, value, callback) => {
+              if (formData.value.proxyEnabled && (!value || value.trim() === '')) {
+                callback(new Error('启用代理时，必须填写代理主机地址'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
+        proxyPort: [
+          {
+            validator: (_rule, value, callback) => {
+              if (formData.value.proxyEnabled && !value) {
+                callback(new Error('启用代理时，必须填写代理端口'));
+              } else {
+                callback();
+              }
+            },
             trigger: 'blur',
           },
         ],

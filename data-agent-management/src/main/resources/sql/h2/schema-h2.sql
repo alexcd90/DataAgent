@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS agent (
     tags TEXT COMMENT '标签，逗号分隔',
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    human_review_enabled TINYINT DEFAULT 0 COMMENT '是否启用计划人工复核 0-否，1-是',
     PRIMARY KEY (id),
     INDEX idx_agent_name (name),
     INDEX idx_agent_status (status),
@@ -260,5 +259,11 @@ CREATE TABLE IF NOT EXISTS `model_config` (
   `created_time` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_time` datetime DEFAULT NULL COMMENT '更新时间',
   `is_deleted` int(11) DEFAULT '0' COMMENT '0=未删除, 1=已删除',
+  -- 新增 AI 代理配置字段（默认关闭以确保零侵入性）
+  `proxy_enabled` tinyint(1) DEFAULT '0' COMMENT '是否启用代理：0-禁用，1-启用',
+  `proxy_host` varchar(255) DEFAULT NULL COMMENT '代理主机地址',
+  `proxy_port` int(11) DEFAULT NULL COMMENT '代理端口',
+  `proxy_username` varchar(255) DEFAULT NULL COMMENT '代理用户名（可选）',
+  `proxy_password` varchar(255) DEFAULT NULL COMMENT '代理密码（可选）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

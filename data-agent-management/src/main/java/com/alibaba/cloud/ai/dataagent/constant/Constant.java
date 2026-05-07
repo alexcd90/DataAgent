@@ -30,6 +30,8 @@ public final class Constant {
 
 	public static final String AGENT_ID = "agentId";
 
+	public static final String DATASOURCE_ID = "datasourceId";
+
 	public static final String MULTI_TURN_CONTEXT = "MULTI_TURN_CONTEXT";
 
 	public static final String RESULT = "result";
@@ -153,5 +155,8 @@ public final class Constant {
 	public static final String STREAM_EVENT_COMPLETE = "complete";
 
 	public static final String STREAM_EVENT_ERROR = "error";
+
+	// Langfuse 追踪：threadId 透传到 graph state，用于 token 累计
+	public static final String TRACE_THREAD_ID = "TRACE_THREAD_ID";
 
 }

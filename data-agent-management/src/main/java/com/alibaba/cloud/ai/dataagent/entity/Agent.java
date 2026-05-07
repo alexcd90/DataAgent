@@ -16,6 +16,7 @@
 package com.alibaba.cloud.ai.dataagent.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,6 +45,7 @@ public class Agent {
 	private String status; // Status: draft-pending publication, published-published,
 							// offline-offline
 
+	@JsonIgnore
 	private String apiKey; // API Key for external access, format sk-xxx
 
 	@Builder.Default
@@ -62,9 +64,5 @@ public class Agent {
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime updateTime;
-
-	// Whether human review is enabled for this agent
-	@Builder.Default
-	private Integer humanReviewEnabled = 0; // 0/1 for JDBC compatibility
 
 }
